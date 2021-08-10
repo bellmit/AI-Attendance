@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<link rel="stylesheet" href="../layui/css/layui.css">
+<link rel="stylesheet" href="../layer/theme/default/layer.css">
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript"  src="../layui/layui.js"></script>
+<script type="text/javascript" src="../js/jquery.webcam.js"></script>
+</head> 
+	<body>
+	<form class="layui-form" action="">
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</body>
+<script>
+    var w = 320, h = 240;                                       //摄像头配置,创建canvas
+    var pos = 0, ctx = null, saveCB, image = [];
+    var canvas = document.createElement("canvas");
+    $("#Scanvas").append(canvas);
+    canvas.setAttribute('width', w);
+    canvas.setAttribute('height', h);
+    ctx = canvas.getContext("2d");
+    image = ctx.getImageData(0, 0, w, h);
+
+    $("#webcam").webcam({
+        width: w,
+        height: h,
+        mode: "callback",                       //stream,save，回调模式,流模式和保存模式
+        swffile: "<%=basePath%>js/jscam_canvas_only.swf",
+        onTick: function(remain) { 
+            if (0 == remain) {
+                $("#status").text("拍照成功!");
+            } else {
+                $("#status").text("倒计时"+remain + "秒钟...");
+            }
+        },
+        onSave: function(data){              //保存图像
+            var col = data.split(";");
+            var img = image;
+            for(var i = 0; i < w; i++) {
+                var tmp = parseInt(col[i]);
+                img.data[pos + 0] = (tmp >> 16) & 0xff;
+                img.data[pos + 1] = (tmp >> 8) & 0xff;
+                img.data[pos + 2] = tmp & 0xff;
+                img.data[pos + 3] = 0xff;
+                pos+= 4;
+            }
+            if (pos >= 4 * w * h) {
+                ctx.putImageData(img,0,0);      //转换图像数据，渲染canvas
+                pos = 0;
+                  
+                //Imagedata=canvas.toDataURL().substring(22);  //上传给后台的图片数据
+            }
+        },
+        onCapture: function () {               //捕获图像
+            webcam.save();      
+        },
+        debug: function (type, string) {       //控制台信息
+            console.log(type + ": " + string);
+        },
+        onLoad: function() {                   //flash 加载完毕执行
+            console.log('加载完毕！')
+            var cams = webcam.getCameraList();
+            
+        }
+    });  
+
+    $(".play").click(function(){
+        webcam.capture(0);        //拍照，参数是倒计时
+        
+        var  images  = canvas.toDataURL("image/png");
+//         alert(images)
+      document.getElementById("canvasId").value = images;
+        if(images != null){
+        	document.getElementById("imagecanvas").value  = images;	
+        }
+    });
+    $("#save").click(function(){
+    	$.post("<%=basePath%>register/registerfaceinfo", {val: "data",w:w,h:h,image: canvas.toDataURL("image/png")},function(){  
+            
+        });
+    });
+</script>
+</html>

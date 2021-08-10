@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.blacklist";
+option objc_class_prefix = "BLACKLIST";
+
+import "blacklist/blacklist.message.proto";
+
+package VisitorSystem_cq;
+
+
+
+message BlacklistDataApplyRequest {
+    string client_id = 1;
+    string client_secret = 2; //设备编号的加盐MD5值，盐值由客户端与服务器端约定
+    int64 version = 3;
+    int32 belongId = 4;
+}
+
+
+message BlacklistDataApplyResponse {
+    int32 code = 1;
+    string message = 2;
+    string server_secret = 3;
+    int64 serverVersion = 4;
+    repeated BlacklistMessage blacklistreasonMessages = 5; //返回当前版本下的所有到访事由信息
+}
+
+service BlacklistAuthService {
+    rpc BlacklistDataApply (BlacklistDataApplyRequest) returns (BlacklistDataApplyResponse){};
+}

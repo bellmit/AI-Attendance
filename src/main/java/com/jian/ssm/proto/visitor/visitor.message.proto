@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.visitor";
+option objc_class_prefix = "VISITOR";
+
+package VisitorSystem_cq;
+
+message VisitorMessage {
+    string visitorId = 1;
+    int32 idType = 2;
+    string visitorName=3;
+    string sex=4;
+    string nation=5;
+    string birthday=6;
+    string address=7;
+    string depart=8;
+    string validityBegin=9;
+    string validityEnd=10;
+    bytes idPhoto=11;
+    bytes cameraPhoto=12;
+    bytes cameraFeature=13;
+    bytes fingerFeature=14;
+    int32 action=15;
+    int64 version=16;
+    float faceVerifyScore=17;
+    string faceVerifyResult=18;
+    int64 dateTime=19;
+    string contact=20;
+    int32 belongId=21;
+}
+
+message VisitInfoMessage{
+    string visitId=1;
+    int32 employeeId=2;
+    string visitorId=3;
+    string visitorName=4;
+    int32 reasonId=5;
+    bytes cameraPhoto=6;
+    string checkInDeviceId=7;
+    int64 checkInTime=8;
+    string checkOutDeviceId=9;
+    int64 checkOutTime=10;
+    int32 state=11;
+    string comment=12;
+    int32 action=15;
+    int64 version=16;
+    int32 belongId=17;
+}
+
+message CheckOutMessage{
+    string visitId=1;
+    string checkOutDeviceId=2;
+    int64 checkOutTime=3;
+    int32 belongId=4;
+}
+

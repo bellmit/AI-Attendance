@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.blacklist";
+option objc_class_prefix = "BLACKLIST";
+
+package VisitorSystem_cq;
+
+message BlacklistMessage {
+    int32 id = 1; //uuid
+    string visitorId = 2;
+    bytes photoFeature = 3;
+    int32 belongId = 4;
+}

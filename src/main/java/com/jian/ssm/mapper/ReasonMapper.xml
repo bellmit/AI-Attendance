@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jian.ssm.dao.ReasonDao" >
+  <resultMap id="BaseResultMap" type="com.jian.ssm.entity.Reason" >
+    <id column="reasonId" property="reasonid" jdbcType="INTEGER" />
+    <result column="reasonName" property="reasonname" jdbcType="VARCHAR" />
+    <result column="belongId" property="belongid" jdbcType="INTEGER" />
+  </resultMap>
+  <select id="seleteReasonByName" resultType="com.jian.ssm.entity.Reason">
+     select  *  from  reason where  reasonName=#{reasonName,jdbcType=VARCHAR} <if test="belongId != 0">and belongId = #{belongId,jdbcType=INTEGER}</if>  
+  </select>
+  <select id="sleteReason" resultType="com.jian.ssm.entity.Reason">
+   select * from  reason <if test="belongId != 0">where belongId = #{belongId,jdbcType=INTEGER}</if> 
+  </select>
+  <insert id="inserRason">
+   insert into  reason values 
+   (#{reasonName,jdbcType=VARCHAR} ,#{belongId,jdbcType=INTEGER})
+  </insert>
+  <delete id="deleteReason">
+  delete from reason where  reasonId=#{reasonId,jdbcType=INTEGER} 
+  </delete>
+  <select id="selectReasonName" resultType="java.lang.String">
+  select reasonName from reason where reasonId=#{reasonId,jdbcType=INTEGER} and belongId = #{belongId,jdbcType=INTEGER} 
+  </select>
+ </mapper>

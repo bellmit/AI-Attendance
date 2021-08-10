@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jian.ssm.dao.CompanyDao">
+	<resultMap id="BaseResultMap" type="com.jian.ssm.entity.Company">
+		<id column="belongId" property="belongid" jdbcType="INTEGER" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="parentId" property="parentid" jdbcType="INTEGER" />
+		<result column="level" property="level" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="selectCompany" resultMap="BaseResultMap">
+		select * from Company
+	</select>
+	<select id="getCompanys" resultMap="BaseResultMap">
+		select * from Company WHERE belongId = #{belongId,jdbcType=INTEGER}
+		OR parentId = #{belongId,jdbcType=INTEGER}
+	</select>
+
+	<select id="getCompanyByBelongId" resultMap="BaseResultMap">
+		select * from Company WHERE belongId = #{belongId,jdbcType=INTEGER}
+	</select>
+
+	<insert id="addCompany" parameterType="com.jian.ssm.entity.Company">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="Company.belongid">
+         SELECT MAX(belongId)FROM Company
+		</selectKey>
+		insert into Company values ( (SELECT MAX(belongId) FROM Company)+1
+		,#{Company.description,jdbcType=VARCHAR}
+		,#{Company.parentid,jdbcType=INTEGER},#{Company.level,jdbcType=INTEGER})
+	</insert>
+	<update id="updateCompany">
+	 update  Company set description=#{Company.description,jdbcType=VARCHAR} where  belongId=#{Company.belongid,jdbcType=INTEGER}
+	</update>
+</mapper>

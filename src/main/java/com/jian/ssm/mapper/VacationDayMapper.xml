@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jian.ssm.dao.VacationDaysDao" >
+  <resultMap id="BaseResultMap" type="com.jian.ssm.entity.VacationDay" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+     <result column="startDate" property="startDate" jdbcType="VARCHAR" />
+      <result column="startDate" property="endDate" jdbcType="VARCHAR" />
+    <result column="belongId" property="belongId" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insertVacationDay">
+  insert into vacationDays  VALUES (#{vd.description ,jdbcType=VARCHAR},#{vd.startDate ,jdbcType=VARCHAR},#{vd.endDate ,jdbcType=VARCHAR} ,#{vd.belongId ,jdbcType=INTEGER},#{vd.type ,jdbcType=INTEGER})
+  </insert>
+  <delete id="deleteVacationDay">
+  DELETE from vacationDays  where id =#{vd.id ,jdbcType=INTEGER}
+  </delete>
+  <select id="selectVacationDays"  resultMap="BaseResultMap">
+	select * from (select row_number()over(order by id
+	desc)rownumber ,* from
+	vacationDays where type=#{vd.type,jdbcType=INTEGER} <if test="vd.belongId != 0">  and  belongId= #{vd.belongId,jdbcType=INTEGER} </if>  ) vacationDays where
+	rownumber between #{befor ,jdbcType=INTEGER}
+	and #{after , jdbcType=INTEGER} 
+  </select>
+  <select id="selectVacationDaysCount"  resultType="java.lang.Integer">
+  select  count(*)  from vacationDays  where type=#{vd.type,jdbcType=INTEGER} <if test="vd.belongId != 0"> and belongId= #{vd.belongId,jdbcType=INTEGER} </if>
+  </select>
+  <select id="selectVacationDaysByType" resultMap="BaseResultMap">
+     select *  from vacationDays where type=#{type,jdbcType=INTEGER}<if test="belongId != 0"> and belongId= #{belongId,jdbcType=INTEGER} </if>
+  </select>
+ </mapper>

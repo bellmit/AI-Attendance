@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.visitor";
+option objc_class_prefix = "VISITOR";
+
+
+import "visitor/visitor.message.proto";
+
+package VisitorSystem_cq;
+
+message VisitorUploadRequest {
+    string client_id = 1;
+    string client_secret = 2; //设备编号的加盐MD5值，盐值由客户端与服务器端约定
+    VisitorMessage visitor=3;
+    int32 belongId = 4;
+}
+
+message VisitorUploadResponce{
+    int32 code = 1;
+    string message = 2;
+    string server_secret = 3;
+}
+
+message VisitInfoUploadRequest{
+    string client_id = 1;
+    string client_secret = 2; //设备编号的加盐MD5值，盐值由客户端与服务器端约定
+    VisitInfoMessage visitInfo=3;
+    int32 belongId = 4;
+}
+
+message VisitInfoUploadResponce{
+    int32 code = 1;
+    string message = 2;
+    string server_secret = 3;
+}
+
+message VisitInfoDownloadRequest{
+    string client_id = 1;
+    string client_secret = 2; //设备编号的加盐MD5值，盐值由客户端与服务器端约定
+    int64 version = 3;
+    int32 belongId = 4;
+}
+
+message VisitInfoDownloadResponce{
+    int32 code = 1;
+    string message = 2;
+    string server_secret = 3;
+    int64 serverVersion = 4;
+    repeated VisitInfoMessage visitInfoMessages = 5; //返回所有非本机的系统版本大于本机版本的访问记录
+}
+
+message CheckOutRequest{
+    string client_id = 1;
+    string client_secret = 2; //设备编号的加盐MD5值，盐值由客户端与服务器端约定
+    CheckOutMessage checkOutMessage = 3;
+    int32 belongId = 4;
+}
+
+message CheckOutResponce{
+    int32 code = 1;
+    string message = 2;
+    string server_secret = 3;
+}
+
+service VisitorAuthService{
+    rpc VisitorUpload(VisitorUploadRequest) returns (VisitorUploadResponce){};
+    rpc VisitInfoUpload(VisitInfoUploadRequest) returns (VisitInfoUploadResponce){};
+    rpc VisitInfoDownload(VisitInfoDownloadRequest) returns (VisitInfoDownloadResponce){};
+    rpc CheckOut(CheckOutRequest) returns (CheckOutResponce){};
+}

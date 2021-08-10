@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.version";
+option objc_class_prefix = "VERSION";
+
+package VisitorSystem_cq;
+
+message VersionMessage {
+    string name = 1;
+    int64 version = 2;
+    int32 belongId = 3;
+}
+

@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.attence";
+option objc_class_prefix = "ATTENCE";
+
+package AttenceSystem;
+
+message  AttenceMessage{
+  string  employeeId = 1; 
+  string name =2 ;
+  string workDate=3; //yy-MM-dd HH:mm:ss
+  bytes camreaPhoto = 4;
+}
+
+message  EmployeeInfo{
+   string employeeId = 1 ;
+   string name = 2 ;
+   bytes  photoFeature = 3 ;
+   int64  version = 4 ;
+   string ICcard =5 ;
+}
+
+message EmployeeVersion{
+     int64 version = 1 ;
+}

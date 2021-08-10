@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>添加员工</title>
+<link rel="stylesheet" type="text/css" href="../static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" href="../layui/css/layui.css">
+<link rel="stylesheet" href="../layer/theme/default/layer.css">
+<link rel="stylesheet" href="../css/attdence.css">
+<script type="text/javascript"  src="../layui/layui.js"></script>
+<script type="text/javascript" src="../lib/jquery/1.9.1/jquery.min.js"></script>
+<script src="../js/vue.min.js"></script>
+<script src="../js/jquery.webcam.js" ></script>
+<script src="../layer/layer.js"></script>
+</head>
+<body>
+<article class="page-container">
+   身份证照片：<div id="demo1">{{img1}} </div>
+   现场照片：<img width="210" height="210" class="layui-upload-img" id="demo2">
+  比对分值：<P  id = "p1"></P>
+</article>
+</body>
+<script >
+    var curWwwPath = window.document.location.href;
+    var pathName = window.document.location.pathname;
+    var pos = curWwwPath.indexOf(pathName);
+    var localhostPath = curWwwPath.substring(0, pos);
+    var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+    var basePath=localhostPath+projectName+"/";
+
+var  data = JSON.parse(sessionStorage.getItem("data"));
+/* $(document).ready(function(){
+  $('#demo1').val("jjjj");
+ 
+  $('#demo2').attr('src', data.idphoto_s);
+  
+}); */
+
+var vm = new Vue({
+    el: '#demo1',
+    data: {
+        img1: data.idphoto_s,
+    }
+})
+
+  
+</script>
+
+</html>

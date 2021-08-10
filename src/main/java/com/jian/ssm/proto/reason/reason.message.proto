@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.reason";
+option objc_class_prefix = "REASON";
+
+package VisitorSystem_cq;
+
+message ReasonMessage {
+    int32 reasonId = 1; //uuid
+    string reasonName = 2;
+    int32 belongId = 3;
+}

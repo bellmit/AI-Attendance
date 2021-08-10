@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jian.ssm.dao.EmployeeDao">
+	<resultMap id="BaseResultMap" type="com.jian.ssm.entity.Employee">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="departmentId" property="departmentid" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="VARCHAR" />
+		<result column="photo" property="photo" jdbcType="LONGVARBINARY" />
+		<result column="photoFeature" property="photofeature" jdbcType="LONGVARBINARY" />
+		<result column="fingerFeature" property="fingerfeature"
+			jdbcType="LONGVARBINARY" />
+		<result column="belongId" property="belongid" jdbcType="INTEGER" />
+		<result column="zeId" property="zeId" jdbcType="INTEGER" />
+		<result column="version" property="version" jdbcType="INTEGER" />
+		<result column="ICcard" property="ICcard" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="seleteEmp" resultType="com.jian.ssm.entity.Employee">
+		select * from employee where name=#{name,jdbcType=VARCHAR}
+	</select>
+	<select id="seleteEmpCount" resultType="java.lang.Integer">
+		select count(*) from employee
+	</select>
+	<select id="seleteLemp" resultType="com.jian.ssm.entity.Employee">
+		select * from (select row_number()over(order by id desc)rownumber ,* from
+		employee <if test="belongId != 0">where belongId =#{belongId ,jdbcType=INTEGER}</if>) employee where rownumber between #{befor ,jdbcType=INTEGER}
+		and #{after , jdbcType=INTEGER} 
+	</select>
+	<insert id="insertEmp">
+		insert into employee (id ,departmentId , name ,phone ,email
+		,photoFeature,photo,sex ,belongId,version ,ICcard) values
+		( #{id,jdbcType=VARCHAR},  #{departmentId ,jdbcType=INTEGER},#{name,jdbcType=VARCHAR},#{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{photoFeature,jdbcType=LONGVARBINARY},#{photo,jdbcType=VARCHAR},#{sex,jdbcType=VARCHAR},#{belongId
+		,jdbcType=INTEGER} ,#{version,jdbcType=INTEGER} ,#{ICcard,jdbcType=VARCHAR})
+	</insert>
+
+	<delete id="deleteEmp">
+		delete from employee where id=#{id,jdbcType=VARCHAR}
+	</delete>
+	<select id="seleteEmpPhoto" resultType="com.jian.ssm.entity.Employee">
+		select photo from employee where id=#{id,jdbcType=VARCHAR}
+	</select>
+	<select id="selectEmp" resultType="com.jian.ssm.entity.Employee">
+		select * from employee
+	</select>
+	<select id="selectEmpName" resultType="java.lang.String">
+		select name from employee where zeId=#{id,jdbcType=VARCHAR}
+	</select>
+	<select id="selectEmpByName"  resultMap="BaseResultMap">
+	   select * from  employee  where name = #{name ,jdbcType=VARCHAR} <if test="belongId != 0">and  belongId = #{belongId,jdbcType=INTEGER}</if> 
+	</select>
+	<select id="selectEmpByDepartmentname"  resultMap="BaseResultMap">
+	SELECT  *  FROM  employee
+	WHERE
+	employee.departmentId = (SELECT  Department.departmentId  FROM  Department  WHERE Department.departmentName = #{departmentName,jdbcType=VARCHAR} AND  Department.belongId = #{belongId,jdbcType=INTEGER})
+	AND employee.belongId =#{belongId,jdbcType=INTEGER}
+	</select>
+	<select id="selectEmpByWorkId" resultMap="BaseResultMap">
+	select *  from employee  where id = #{workId,jdbcType=VARCHAR} and  belongId = #{belongId,jdbcType=INTEGER}
+	</select>
+	
+	<update id="updateEmp">
+	   update employee  set  id = #{emp.id, jdbcType=VARCHAR}, name = #{emp.name ,jdbcType=VARCHAR} ,
+	                         sex = #{emp.sex ,jdbcType=VARCHAR} , departmentId=#{emp.departmentid,jdbcType=INTEGER},
+	                         phone =#{emp.phone,jdbcType=VARCHAR}, email = #{emp.email,jdbcType=VARCHAR},
+	                         photo=#{emp.photo,jdbcType=VARCHAR}, photoFeature=#{emp.photofeature,jdbcType=LONGVARBINARY},
+	                         ICcard=#{emp.ICcard,jdbcType=VARCHAR}
+	                    where id=#{id, jdbcType=VARCHAR}    
+	</update>
+	
+	<select id="selectEmpByVersion"  resultMap="BaseResultMap">
+	  select * from employee  where  version > #{version,jdbcType=INTEGER}
+	</select>
+	<select id="selectEmpById"  resultMap="BaseResultMap">
+	  select * from employee where id = #{employeeId ,jdbcType=VARCHAR} 
+	</select>
+	<select id="selectEmpByIdList"  resultMap="BaseResultMap">
+	select * from employee where id = #{employeeId ,jdbcType=VARCHAR} 
+	</select>
+	<select id="selectEmpByZeId" resultMap="BaseResultMap" >
+	  select * from employee  where  zeId =#{zeId,jdbcType=INTEGER} 
+	</select>
+	<select id="selectEmpByICcard" resultMap="BaseResultMap" >
+	  select * from employee  where  ICcard =#{ICcard,jdbcType=VARCHAR} 
+	</select>
+	<select id="selectEmpByICcardList" resultMap="BaseResultMap">
+	select *  from employee  where ICcard = #{ICcard,jdbcType=VARCHAR} <if test="belongId != 0">and belongId=#{belongId,jdbcType=INTEGER}</if>
+	</select>
+	<!-- <select id="selectEmpByRowbounds" resultMap="BaseResultMap">
+	 	select * from (select row_number()over(order by id desc)rownumber ,* from
+		employee <if test="belongId != 0">where belongId =#{belongId ,jdbcType=INTEGER}</if>) employee where rownumber between #{befor ,jdbcType=INTEGER}
+		and #{after , jdbcType=INTEGER} 
+	</select> -->
+	
+</mapper>

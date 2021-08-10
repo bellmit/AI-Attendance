@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jian.ssm.dao.DepartmentDao" >
+  <resultMap id="BaseResultMap" type="com.jian.ssm.entity.Department" >
+    <id column="departmentId" property="departmentId" jdbcType="INTEGER" />
+    <result column="departmentName" property="departmentName" jdbcType="VARCHAR" />
+    <result column="belongId" property="belongid" jdbcType="INTEGER" />
+  </resultMap>
+  <select id="selectDepen" resultType="com.jian.ssm.entity.Department">
+     select  *  from  Department where  departmentName=#{departmentName,jdbcType=VARCHAR}  <if test="belongId != 0">and belongId = #{belongId,jdbcType=INTEGER}</if> 
+  </select>
+  <select id="selectDepens" resultType="com.jian.ssm.entity.Department">
+   select * from  Department <if test="belongId != 0"> where  belongId = #{belongId,jdbcType=INTEGER} </if>
+  </select>
+  <insert id="insertDepartment">
+   insert into  Department values 
+   (#{departmentName,jdbcType=VARCHAR},#{belongId,jdbcType=INTEGER})
+  </insert>
+  <delete id="deleteDepen">
+  delete from Department where  departmentId=#{departmentId,jdbcType=INTEGER}  <if test="belongId != 0">and belongId = #{belongId,jdbcType=INTEGER}</if> 
+  </delete>
+  <select id="seleteDepenName" resultType="java.lang.String">
+    select  departmentName from  Department where departmentId = #{departmentId,jdbcType=INTEGER} 
+  </select>
+ </mapper>

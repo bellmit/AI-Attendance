@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.company";
+option objc_class_prefix = "COMPANY";
+
+package VisitorSystem_cq;
+
+message CompanyMessage {
+    int32 belongId = 1; //uuid
+    string description = 2;
+    int32 parentId = 3;
+}

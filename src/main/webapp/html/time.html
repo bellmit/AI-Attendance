@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title></title>
+<link rel="stylesheet" type="text/css"
+	href="../static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" href="../layui/css/layui.css">
+<link rel="stylesheet" href="../layer/theme/default/layer.css">
+<link rel="stylesheet" href="../css/attdence.css">
+<script type="text/javascript" src="../layui/layui.js"></script>
+<script type="text/javascript" src="../lib/jquery/1.9.1/jquery.min.js"></script>
+<script src="../js/jquery.webcam.js"></script>
+<script src="../layer/layer.js"></script>
+</head>
+<body>
+	<article class="page-container">
+	<form class="layui-form" action="" method="post" style="">
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">上班开始打卡时间选择:</label>
+					<div class="layui-input-inline">
+						<input name="startTime" class="layui-input" id="test4" placeholder="HH:mm:ss"
+							type="text">
+					</div>
+				</div>
+				</div>
+				<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">上班结束打卡时间选择:</label>
+					<div class="layui-input-inline">
+						<input name="endTime" class="layui-input" id="test5" placeholder="HH:mm:ss"
+							type="text">
+					</div>
+				</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">弹性工作时间：</label>
+					<div class="layui-input-block">
+						<input name="workTime" lay-verify="title" autocomplete="off"
+							placeholder="" class="layui-input" type="text">
+					</div>
+				</div>
+                <div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">结算加班时间选择:</label>
+					<div class="layui-input-inline">
+						<input name="workOverTime" class="layui-input" id="test6" placeholder="HH:mm:ss"
+							type="text">
+					</div>
+				</div>
+				</div>
+
+
+				<div class="layui-form-item">
+					<div class="layui-input-block" style="margin-top: 20px;">
+						<button class="layui-btn" lay-submit="" lay-filter="insertEmp">确定</button>
+					</div>
+				</div>
+	</form>
+	</article>
+</body>
+<script>
+var curWwwPath = window.document.location.href;
+var pathName = window.document.location.pathname;
+var pos = curWwwPath.indexOf(pathName);
+var localhostPath = curWwwPath.substring(0, pos);
+var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+var basePath=localhostPath+projectName+"/";
+
+
+
+	layui.use('laydate', function() {
+		 var laydate = layui.laydate;
+		  
+		//时间选择器
+		laydate.render({
+			elem : '#test4',
+			type : 'time'
+		});
+		laydate.render({
+			elem : '#test5',
+			type : 'time'
+		});
+		laydate.render({
+			elem : '#test6',
+			type : 'time'
+		});
+		
+	});
+
+	layui.use([ 'form' ], function() {
+		var form = layui.form
+		//监听提交
+		form.on('submit(insertEmp)', function(data) {
+			var dataobj = JSON.parse(JSON.stringify(data.field));
+				console.log(JSON.stringify(data.field))
+				$.ajax({
+					type : 'post',
+					url : basePath + 'attence/setStartTime',
+					data : {
+						'data' : JSON.stringify(data.field),
+					},
+					dataType : "json",
+					success : function(data_re) {
+						var  re_value = JSON.parse(JSON.stringify(data_re));
+						if(re_value.code==1){
+							layer.msg("设置成功")
+						}else if(re_value.code== -1){
+							layer.alert("弹性时间非数字")
+						}
+						
+					},
+					error : function(msg) {
+						layer.msg("服务器偷懒了")
+					}
+				});
+
+			return false;
+		});
+	});
+
+</script>
+
+</html>

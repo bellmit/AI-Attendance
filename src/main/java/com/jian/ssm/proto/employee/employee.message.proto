@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.employee";
+option objc_class_prefix = "EMPLOYEE";
+
+package VisitorSystem_cq;
+
+message EmployeeMessage {
+    int32 id = 1; //uuid
+    int32 departmentId = 2;
+    string name = 3;
+    string phone = 4;
+    string email = 5;
+    bytes photo = 6;
+    bytes photoFeature = 7;
+    bytes fingerFeature = 8;
+    int32 belongId = 9;
+}

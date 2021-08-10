@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.metting";
+option objc_class_prefix = "METTING";
+
+package MettingSystem;
+
+//参加会议人员信息
+message MettingEmpInfo{
+     int32  mettingId = 1 ;
+     string mettingName = 2 ;
+     string employeeId = 3 ;
+     string employeeName = 4 ;
+     bytes  photoFeature = 5 ;
+}

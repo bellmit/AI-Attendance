@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jian.ssm.dao.AttenceDao" >
+  <resultMap id="BaseResultMap" type="com.jian.ssm.entity.Attence" >
+    <id column="attenceId" jdbcType="INTEGER" property="attenceId" />
+    <result column="employeeId" jdbcType="VARCHAR" property="employeeId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="workDate" jdbcType="TIMESTAMP" property="workDate" />
+    <result column="camreaPhoto" jdbcType="LONGVARBINARY" property="camreaPhoto" />
+  </resultMap>
+  <insert id="insertAttence">
+  insert into attence VALUES(#{at.employeeId,jdbcType=VARCHAR},#{at.name,jdbcType=VARCHAR},#{at.workDate,jdbcType=VARCHAR},#{at.camreaPhoto,jdbcType=LONGVARBINARY})
+  </insert>
+  <select id="getAttenceInfo" resultMap="BaseResultMap">
+  select * from attence where workDate  >= CONVERT(datetime, #{befor,jdbcType=VARCHAR})  and workDate &lt; CONVERT(datetime, dateadd(day,1,#{after,jdbcType=VARCHAR}))
+  AND employeeId=#{employeeId ,jdbcType=VARCHAR}
+  </select>
+  <select id="getAttenceBydate" resultMap="BaseResultMap">
+  SELECT * from attence where workDate =#{date,jdbcType=VARCHAR} AND  employeeId=#{employeeId ,jdbcType=VARCHAR} AND attenceId in (SELECT MAX(attenceId) from attence GROUP BY workDate)
+  </select>
+  <select id="getAllInfoById"  resultMap="BaseResultMap">
+  select * from (select row_number()over(order by employeeId desc)rownumber ,* from
+		attence where   employeeId=  #{employeeId,jdbcType=VARCHAR} ) attence where rownumber between #{befor ,jdbcType=INTEGER}
+		and #{after , jdbcType=INTEGER}  
+  </select>
+  <delete id="delAttence">
+  DELETE  from  attence where employeeId =#{employeeId,jdbcType=VARCHAR}  AND workDate=#{workDate,jdbcType=VARCHAR} 
+  </delete>
+  <select id="getInfoCount"  resultType="java.lang.Integer">
+  select  count(*)  from  attence  where  employeeId =#{employeeid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAttenceCountBydate" resultType="java.lang.Integer">
+  select  count(*)  from  attence where workDate=#{date,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteAllAttnece">
+  delete  from attence  where employeeId = #{employeeid,jdbcType=INTEGER}
+  </delete>
+  <select id="selectAttenceCount" resultType="java.lang.Integer">
+   select  count(*)  from attence  
+  </select>
+  <select id="getAllInfo"  resultMap="BaseResultMap">
+  select * from (select row_number()over(order by workDate desc)rownumber ,* from
+		attence  ) attence where rownumber between #{befor ,jdbcType=INTEGER}
+		and #{after , jdbcType=INTEGER}  
+  </select>
+  <delete id="deleteAttenceByAttenceID" >
+  delete  from  attence where attenceId=#{ad,jdbcType=INTEGER}
+  </delete>
+  <select id="getCountAll" resultType="java.lang.Integer">
+  select count(*)  from  attence where employeeId =#{employeeid,jdbcType=VARCHAR} and  workDate  >= CONVERT(datetime, #{befor,jdbcType=VARCHAR})  and workDate &lt; CONVERT(datetime, dateadd(day,1,#{after,jdbcType=VARCHAR}))
+  </select>
+ </mapper>

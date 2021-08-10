@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.company";
+option objc_class_prefix = "COMPANY";
+
+import "company/company.message.proto";
+
+package VisitorSystem_cq;
+
+message CompanyDataApplyRequest {
+    string client_id = 1;
+    string client_secret = 2; //设备编号的加盐MD5值，盐值由客户端与服务器端约定
+}
+
+message CompanyDataApplyResponse {
+    int32 code = 1;
+    string message = 2;
+    string server_secret = 3;
+    repeated CompanyMessage companyMessages = 4; //返回当前版本下的所有部门信息
+}
+
+service CompanyAuthService {
+    rpc CompanyDataApply (CompanyDataApplyRequest) returns (CompanyDataApplyResponse){};
+}

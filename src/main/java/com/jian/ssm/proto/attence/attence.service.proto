@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.attence";
+option objc_class_prefix = "ATTENCE";
+
+import "attence/attence.message.proto";
+
+package AttenceSystem;
+//考勤数据上传
+message  AttenceUploadDataRequest{
+       
+    AttenceMessage   attence = 1 ;
+}
+
+message AttenceUploadDataResponse{
+   int32  code = 1 ;
+   string message = 2 ;
+   }
+
+//获取员工数据
+message  EmployeeInfoRequest{
+    
+    int64 version = 3;  //软件启动时上传的version值是0,然后服务端会返回全部员工数据 
+}
+message EmployeeInfoResponse{
+   int32  code = 1 ;   //返回0失败
+   string message = 2 ;
+   repeated EmployeeInfo employeeInfo = 4 ;
+}
+
+//版本
+message EmployeeVersionRequest{
+   string  versionName =1;
+}
+message EmployeeVersionResponse{
+    int64  version = 1 ;
+}
+
+//获取头像
+message getPhotoRequest{
+      string  employeeId = 1;
+}
+message getPhotoResponse{
+        bytes photo =1;
+}
+service  AttenceAuthService{
+ rpc  AttenceUpload(AttenceUploadDataRequest) returns (AttenceUploadDataResponse){};
+ rpc  GetEmployeeInfo(EmployeeInfoRequest) returns (EmployeeInfoResponse){};
+ rpc  GetEmployeeVersion(EmployeeVersionRequest) returns (EmployeeVersionResponse){};
+ rpc  GetPhoto(getPhotoRequest)returns(getPhotoResponse){}
+}

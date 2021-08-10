@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jian.ssm.dao.PeopleIdentityDao">
+  <resultMap id="BaseResultMap" type="com.jian.ssm.entity.PeopleIdentity">
+    <id column="uuid" jdbcType="VARCHAR" property="uuid" />
+    <result column="idCard" jdbcType="VARCHAR" property="idcard" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="nation" jdbcType="VARCHAR" property="nation" />
+    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="depart" jdbcType="VARCHAR" property="depart" />
+    <result column="validityBegin" jdbcType="VARCHAR" property="validitybegin" />
+    <result column="validityEnd" jdbcType="VARCHAR" property="validityend" />
+    <result column="idPhoto" jdbcType="LONGVARBINARY" property="idphoto" />
+    <result column="cameraPhoto" jdbcType="LONGVARBINARY" property="cameraphoto" />
+    <result column="cameraPhotoLeft" jdbcType="LONGVARBINARY" property="cameraphotoleft" />
+    <result column="cameraPhotoRight" jdbcType="LONGVARBINARY" property="cameraphotoright" />
+    <result column="action" jdbcType="INTEGER" property="action" />
+    <result column="belongId" jdbcType="INTEGER" property="belongid" />
+    <result column="cameraFeature" jdbcType="LONGVARBINARY" property="camerafeature" />
+    <result column="fingerFeature" jdbcType="LONGVARBINARY" property="fingerfeature" />
+    <result column="deviceId" jdbcType="VARCHAR" property="deviceId" />
+     <result column="identityDate" jdbcType="VARCHAR" property="identityDate" />
+     <result column="compareScore" jdbcType="VARCHAR" property="compareScore" />
+    <result column="compareResult" jdbcType="VARCHAR" property="compareResult" />
+  </resultMap>
+ <insert id="insertPeopleIdentity">
+   insert into  peopleIdentity values (#{pi.uuid ,jdbcType=VARCHAR} ,#{pi.idcard,jdbcType=VARCHAR} ,#{pi.name ,jdbcType=VARCHAR},
+                                       #{pi.sex ,jdbcType=VARCHAR} , #{pi.nation ,jdbcType=VARCHAR},#{pi.birthday,jdbcType=VARCHAR},
+                                        #{pi.address ,jdbcType=VARCHAR} ,#{pi.depart ,jdbcType=VARCHAR},#{pi.validitybegin , jdbcType=VARCHAR},
+                                        #{pi.validityend,jdbcType=VARCHAR} ,#{pi.idphoto,jdbcType=LONGVARBINARY},#{pi.cameraphoto,jdbcType=LONGVARBINARY},
+                                        #{pi.cameraphotoleft,jdbcType=LONGVARBINARY},#{pi.cameraphotoright,jdbcType=LONGVARBINARY},#{pi.camerafeature,jdbcType=LONGVARBINARY},#{pi.fingerfeature,jdbcType=LONGVARBINARY},
+                                        #{pi.action,jdbcType=INTEGER},#{pi.belongid,jdbcType=INTEGER} ,#{pi.deviceId,jdbcType=VARCHAR} , #{pi.identityDate ,jdbcType=VARCHAR} ,#{pi.compareScore,jdbcType=VARCHAR} ,#{pi.compareResult,jdbcType=VARCHAR})
+ </insert>
+	<select id="selectPeopleIdentityByBelongId" resultMap="BaseResultMap">
+		select * from (select row_number()over(order by uuid desc)rownumber ,* from
+		peopleIdentity <if test="belongId != 0">
+		where belongId= #{belongId,jdbcType=VARCHAR}
+		  </if> )
+		peopleIdentity where rownumber between #{befor ,jdbcType=INTEGER}
+		and
+		#{after , jdbcType=INTEGER}
+	</select>  
+  <select id="selectPeopleIdentityByName" resultMap="BaseResultMap">
+     select * from (select row_number()over(order by uuid desc)rownumber ,* from
+		peopleIdentity <if test="belongId != 0">
+		where belongId= #{belongId,jdbcType=VARCHAR}
+		  </if> ) peopleIdentity where rownumber between #{befor ,jdbcType=INTEGER}
+		and #{after , jdbcType=INTEGER} and name = #{name ,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectPeopleIdentityByIdcard" resultMap="BaseResultMap">
+     select * from (select row_number()over(order by uuid desc)rownumber ,* from
+		peopleIdentity <if test="belongId != 0">
+		where belongId= #{belongId,jdbcType=VARCHAR}
+		  </if> ) peopleIdentity where rownumber between #{befor ,jdbcType=INTEGER}
+		and #{after , jdbcType=INTEGER} and idCard = #{idcard ,jdbcType=VARCHAR}
+  </select>
+  
+  
+</mapper>

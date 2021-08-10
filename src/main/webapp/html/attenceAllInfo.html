@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>考勤个人访问记录</title>
+<link rel="stylesheet" type="text/css" href="../static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" href="../layui/css/layui.css">
+<link rel="stylesheet" href="../layer/theme/default/layer.css">
+<link rel="stylesheet" href="../css/attdence.css">
+<script type="text/javascript"  src="../layui/layui.js"></script>
+<script type="text/javascript" src="../lib/jquery/1.9.1/jquery.min.js"></script>
+<script src="../js/jquery.webcam.js" ></script>
+<script src="../layer/layer.js"></script>
+</head>
+<body>
+<article class="page-container">
+<table class="layui-table">
+    <colgroup>
+      <col width="150">
+      <col width="150">
+      <col width="200">
+      <col>
+    </colgroup>
+    <thead>
+      <tr>
+        <th>工号</th>
+        <th>姓名</th>
+        <th>考勤时间</th>
+        <th>照片</th>
+        <th>类型</th>
+      </tr> 
+    </thead>
+    <tbody id="attence">
+   
+    </tbody>
+  </table>
+  <div id="demo7"></div>
+</article>
+</body>
+<script>
+var curWwwPath = window.document.location.href;
+var pathName = window.document.location.pathname;
+var pos = curWwwPath.indexOf(pathName);
+var localhostPath = curWwwPath.substring(0, pos);
+var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+ var basePath=localhostPath+projectName+"/";
+  var countd = 0;
+
+  var employeeId = sessionStorage.getItem("employeeId");
+  $.ajax({
+	   type:'GET',
+	   url:basePath+"attence/getInfoCount?empid="+employeeId,
+	   dataType:'json',
+	   async:true,
+	   success:function(data){
+		   countd = data.count;
+	   },
+	   error:function(data){
+		   layer.msg('服务器响应失败了')
+	   }
+});
+  layui.use(['laypage', 'layer'], function(){
+	  var laypage = layui.laypage
+	  ,layer = layui.layer;
+	  //完整功能
+	  laypage.render({
+	    elem: 'demo7'
+	    ,count: countd
+	    ,layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+	    ,jump: function(obj){
+	      /* console.log(obj) */
+	      $.ajax({
+	    	  type:'post',
+	    	  url:basePath+"attence/getAllInfoById",
+	    	  data:{'employeeId':employeeId ,"limit":obj.limit ,"page":obj.curr},
+	    	  dataType:"json",
+	    	  success:function(data){
+	    		  $("#attence").empty();
+	    	    	if(data.msg==1){
+	    	    		for (var i = 0; i < data.allInfo.length; i++) {
+	    					$("#attence").append(
+	    					"<tr>"+
+	    					"<td>"+data.allInfo[i].employeeId+"</td>"+
+	    					"<td>"+data.allInfo[i].name+"</td>"+
+	    					"<td>"+data.allInfo[i].date+"</td>"+
+	    					"<td>"+data.allInfo[i].photo+"</td>"+
+	    					"<td>"+data.allInfo[i].type+"</td>"+
+	    					"</tr>"
+	    					);
+	    				}
+	    	    		
+	    	    	}
+	    	    },
+	          error:function(msg){
+	    			layer.msg("出错了")
+	    		}		
+	      });
+	    }
+	  });
+	  
+
+
+	  
+	 
+	});
+</script>
+</html>

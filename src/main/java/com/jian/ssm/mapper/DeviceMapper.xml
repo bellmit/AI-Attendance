@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jian.ssm.dao.DeviceDao" >
+  <resultMap id="BaseResultMap" type="com.jian.ssm.entity.Device" >
+    <id column="deviceId" property="deviceid" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="parameter" property="parameter" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="port" property="port" jdbcType="INTEGER" />
+    <result column="belongId" property="belongid" jdbcType="INTEGER" />
+     <result column="keyStatus" property="keyStatus" jdbcType="INTEGER" />
+  </resultMap>
+  <select id="selectDevice" resultType="com.jian.ssm.entity.Device">
+     select  *  from  Device where  deviceId=#{deviceId,jdbcType=VARCHAR} 
+  </select>
+  <insert id="insertDevice">
+   insert into  Device values 
+   (#{deviceId ,jdbcType=VARCHAR},#{ip,jdbcType=VARCHAR},#{parameter,jdbcType=VARCHAR},#{type,jdbcType=INTEGER},#{address,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},#{port,jdbcType=INTEGER},#{belongId,jdbcType=INTEGER},#{keyStatus,jdbcType=INTEGER})
+  </insert>
+  <update id="updateDevice">
+   update Device set ip =#{ip,jdbcType=VARCHAR} ,parameter = #{parameter,jdbcType=VARCHAR},type =#{type,jdbcType=INTEGER},address = #{address,jdbcType=VARCHAR}, description = #{description,jdbcType=VARCHAR},port=#{port,jdbcType=INTEGER},belongId=#{belongId,jdbcType=INTEGER}
+                 where deviceId =  #{deviceId ,jdbcType=VARCHAR}
+  </update>
+  <select id="selectDescription"  resultType="java.lang.String">
+  select description  from device where  deviceId=#{deviceId,jdbcType=VARCHAR} <if test="belongId != 0">and belongId = #{belongId ,jdbcType=INTEGER}</if> 
+  </select>
+  <select id="getDeviceCount"  resultType="java.lang.Integer">
+  select  count(*) from Device<if test="belongId != 0"> where  device.belongId = #{belongId,jdbcType=INTEGER} </if>
+  </select>
+	<select id="getDeviceByBelongId" resultMap="BaseResultMap">
+		SELECT
+		*
+		FROM
+		(
+		SELECT
+		row_number () OVER (ORDER BY deviceId DESC) rownumber ,*
+		FROM
+		device
+		) device
+		<if test="belongId != 0">WHERE
+		device.belongId = #{belongId,jdbcType=INTEGER}</if>
+	</select>
+	<select id="getCompanyDes" resultType="java.lang.String">
+		select Company.description from Company where Company.belongId =
+		#{belongId,jdbcType=INTEGER} 
+  </select>
+  <delete id="deleteDevice">
+  delete from device  where  deviceId = #{deviceId ,jdbcType=VARCHAR}  
+  </delete>
+  <update id="updateDeviceKeystatus">
+    update Device set  keyStatus = #{keyStatus ,jdbcType=INTEGER}  where  deviceId = #{deviceId ,jdbcType=VARCHAR}  
+  </update>
+ </mapper>

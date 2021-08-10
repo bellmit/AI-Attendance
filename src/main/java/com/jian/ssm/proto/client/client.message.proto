@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.client";
+option objc_class_prefix = "CLIENT";
+
+package VisitorSystem_cq;
+
+message ClientMessage {
+    string deviceId = 1; //uuid
+    string ip = 2;
+    int32 port = 3;
+    string parameter = 4;
+    int32 type = 5;
+    string address = 6;
+    string description = 7;
+    int32 belongId = 8;
+}

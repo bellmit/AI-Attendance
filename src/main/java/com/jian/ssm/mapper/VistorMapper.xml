@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jian.ssm.dao.VistorDao" >
+  <resultMap id="BaseResultMap" type="com.jian.ssm.entity.Vistor" >
+    <id column="visitorId" property="visitorid" jdbcType="VARCHAR" />
+    <result column="idType" property="idtype" jdbcType="INTEGER" />
+    <result column="visitorName" property="visitorname" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="nation" property="nation" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="depart" property="depart" jdbcType="VARCHAR" />
+    <result column="validityBegin" property="validitybegin" jdbcType="VARCHAR" />
+    <result column="validityEnd" property="validityend" jdbcType="VARCHAR" />
+    <result column="idPhoto" property="idphoto" jdbcType="LONGVARBINARY" />
+    <result column="cameraPhoto" property="cameraphoto" jdbcType="LONGVARBINARY" />
+    <result column="cameraFeature" property="camerafeature" jdbcType="LONGVARBINARY" />
+    <result column="fingerFeature" property="fingerfeature" jdbcType="LONGVARBINARY" />
+    <result column="action" property="action" jdbcType="INTEGER" />
+    <result column="version" property="version" jdbcType="BIGINT" />
+    <result column="faceVerifyScore" property="faceVerifyScore" jdbcType="DOUBLE" />
+    <result column="faceVerifyResult" property="faceVerifyResult" jdbcType="VARCHAR" />
+    <result column="dataTime" property="dataTime" jdbcType="BIGINT" />
+    <result column="belongId" property="belongid" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insertVistor">
+  insert into visitor values (#{visitorId,jdbcType=VARCHAR} ,#{idType,jdbcType=INTEGER} ,
+                               #{visitorName,jdbcType=VARCHAR},#{sex,jdbcType=VARCHAR},
+                               #{nation,jdbcType=VARCHAR},#{birthday,jdbcType=VARCHAR},
+                               #{address,jdbcType=VARCHAR},#{depart,jdbcType=VARCHAR},
+                               #{validityBegin,jdbcType=VARCHAR},#{validityEnd,jdbcType=VARCHAR},
+                               #{idPhoto,jdbcType=LONGVARBINARY},#{cameraPhoto,jdbcType=LONGVARBINARY},#{cameraFeature,jdbcType=LONGVARBINARY},#{fingerFeature,jdbcType=LONGVARBINARY},
+                               #{action,jdbcType=INTEGER},#{version,jdbcType=BIGINT},#{belongId,jdbcType=INTEGER},#{faceVerifyScore,jdbcType=DOUBLE} ,#{faceVerifyResult,jdbcType=VARCHAR},#{dataTime,jdbcType=BIGINT}
+                               ,#{contact,jdbcType=VARCHAR})
+  </insert>
+  <select id="selectVisitorById"  resultType="com.jian.ssm.entity.Vistor">
+  select * from  visitor  where  visitorId = #{visitorId,jdbcType=VARCHAR} 
+                        <if test="belongId != 0">and   belongId = #{belongId,jdbcType=INTEGER}</if>  
+  </select>
+  
+  <select id="selectVisitorAddressById" resultType="java.lang.String">
+     select address from visitor  where visitorId = #{visitorId,jdbcType=VARCHAR}
+  </select>
+  <update id="updateVisitorALL">
+     update  visitor  set idType =#{idType,jdbcType=INTEGER} ,
+                           sex  = #{sex,jdbcType=VARCHAR} ,
+                          nation = #{nation,jdbcType=VARCHAR},
+                          birthday = #{birthday,jdbcType=VARCHAR},
+                          address = #{address,jdbcType=VARCHAR} ,
+                          depart = #{depart,jdbcType=VARCHAR},
+                          validityBegin =#{validityBegin,jdbcType=VARCHAR},
+                          validityEnd = #{validityEnd,jdbcType=VARCHAR} ,
+                          idPhoto = #{idPhoto,jdbcType=LONGVARBINARY} ,
+                          cameraPhoto = #{cameraPhoto,jdbcType=LONGVARBINARY} ,
+                          version = #{version,jdbcType=BIGINT}  
+                       where visitorId =  #{visitorId,jdbcType=VARCHAR}  
+                       <!-- and   belongId = #{belongId,jdbcType=INTEGER} -->
+                          
+  </update>
+  <update id="updateVisitor">
+   update  visitor  set  idType =#{idType,jdbcType=INTEGER} ,cameraPhoto = #{cameraPhoto,jdbcType=LONGVARBINARY}  where visitorId =  #{visitorId,jdbcType=VARCHAR}  
+                     <!--   and   belongId = #{belongId,jdbcType=INTEGER} -->
+  </update>
+  <select id="getIdPhoto" resultMap="BaseResultMap">
+    select  idPhoto  from  visitor  where visitorId =  #{visitorId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectVisitors" resultMap="BaseResultMap">
+  select *  from (select row_number()over(order by visitorId desc)rownumber ,* from
+		visitor  <if test="belongId  != 0 ">where belongId= #{belongId,jdbcType=VARCHAR}</if>)  visitor where rownumber between #{befor ,jdbcType=INTEGER} and #{after ,
+		jdbcType=INTEGER} and visitor.action = 0  
+  
+  </select>
+  <select id="selectCount"  resultType="java.lang.Integer">
+  select count(*) from visitor where  action = 0 <if test="belongId != 0">and belongId = #{belongId , jdbcType=INTEGER}</if> 
+  </select>
+  <update id="updateVisiorAction">
+  update visitor set action = #{action,jdbcType=INTEGER}  where  visitorId = #{visitorId, jdbcType=VARCHAR}
+                                                           
+  </update>
+  <insert id="insertBlackList">
+  INSERT  INTO  blackList(blackList.visitorId,blackList.photoFeature) 
+   SELECT visitor.visitorId ,   visitor.cameraFeature 
+   FROM  visitor where visitor.visitorId=#{visitorId,jdbcType=VARCHAR} 
+                 and  belongId = #{belongId ,jdbcType=INTEGER}
+  </insert>
+  
+  <delete id="deleteBlackList">
+    delete  from  blackList  where  blackList.visitorId  = #{visitorId ,jdbcType=VARCHAR}
+                             and  belongId = #{belongId ,jdbcType=INTEGER}
+  </delete>
+  <select id="getvisitorByVisitorName" resultMap="BaseResultMap">
+  select *  from visitor  where  visitor.visitorName=#{visitorName ,jdbcType=VARCHAR}
+                         <if test="belongId != 0">and  belongId = #{belongId ,jdbcType=INTEGER}</if> 
+  </select>
+ </mapper>

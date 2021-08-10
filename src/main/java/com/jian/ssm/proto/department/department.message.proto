@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ljzn.grpc.department";
+option objc_class_prefix = "DEPARTMENT";
+
+package VisitorSystem_cq;
+
+message DepartmentMessage {
+    int32 departmentId = 1; //uuid
+    string departmentName = 2;
+    int32 belongId = 3;
+}

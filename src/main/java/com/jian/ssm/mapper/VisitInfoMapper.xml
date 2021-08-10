@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jian.ssm.dao.VisitInfoDao">
+	<resultMap id="BaseResultMap" type="com.jian.ssm.entity.VisitInfo">
+		<id column="visitId" property="visitid" jdbcType="VARCHAR" />
+		<result column="employeeId" property="employeeid" jdbcType="INTEGER" />
+		<result column="visitorId" property="visitorid" jdbcType="VARCHAR" />
+		<result column="visitorName" property="visitorname" jdbcType="VARCHAR" />
+		<result column="reasonId" property="reasonid" jdbcType="INTEGER" />
+		<result column="cameraPhoto" property="cameraphoto" jdbcType="LONGVARBINARY" />
+		<result column="checkInDeviceId" property="checkindeviceid" jdbcType="VARCHAR" />
+		<result column="checkInTime" property="checkintime" jdbcType="BIGINT" />
+		<result column="checkOutDeviceId" property="checkoutdeviceid" jdbcType="VARCHAR" />
+		<result column="checkOutTime" property="checkouttime" jdbcType="BIGINT" />
+		<result column="state" property="state" jdbcType="INTEGER" />
+		<result column="comment" property="comment" jdbcType="VARCHAR" />
+		<result column="action" property="action" jdbcType="INTEGER" />
+		<result column="version" property="version" jdbcType="BIGINT" />
+		<result column="belongId" property="belongid" jdbcType="INTEGER" />
+		<result column="employeeName" property="employeeName" jdbcType="VARCHAR" />
+		<association property="employee" javaType="com.jian.ssm.entity.Employee">
+			<id column="id" property="id" jdbcType="INTEGER" />
+			<result column="departmentId" property="departmentid" jdbcType="INTEGER" />
+			<result column="name" property="name" jdbcType="VARCHAR" />
+			<result column="phone" property="phone" jdbcType="VARCHAR" />
+			<result column="email" property="email" jdbcType="VARCHAR" />
+			<result column="sex" property="sex" jdbcType="VARCHAR" />
+			<result column="photo" property="photo" jdbcType="LONGVARBINARY" />
+			<result column="photoFeature" property="photofeature" jdbcType="LONGVARBINARY" />
+			<result column="fingerFeature" property="fingerfeature" jdbcType="LONGVARBINARY" />
+			<result column="belongId" property="belongid" jdbcType="INTEGER" />
+		</association>
+		<association property="visitor" javaType="com.jian.ssm.entity.Vistor">
+			<id column="visitorId" property="visitorid" jdbcType="VARCHAR" />
+			<result column="idType" property="idtype" jdbcType="INTEGER" />
+			<result column="visitorName" property="visitorname" jdbcType="VARCHAR" />
+			<result column="sex" property="sex" jdbcType="VARCHAR" />
+			<result column="nation" property="nation" jdbcType="VARCHAR" />
+			<result column="birthday" property="birthday" jdbcType="VARCHAR" />
+			<result column="address" property="address" jdbcType="VARCHAR" />
+			<result column="depart" property="depart" jdbcType="VARCHAR" />
+			<result column="validityBegin" property="validitybegin" jdbcType="VARCHAR" />
+			<result column="validityEnd" property="validityend" jdbcType="VARCHAR" />
+			<result column="idPhoto" property="idphoto" jdbcType="LONGVARBINARY" />
+			<result column="cameraPhoto" property="cameraphoto" jdbcType="LONGVARBINARY" />
+			<result column="cameraFeature" property="camerafeature" jdbcType="LONGVARBINARY" />
+			<result column="fingerFeature" property="fingerfeature" jdbcType="LONGVARBINARY" />
+			<result column="action" property="action" jdbcType="INTEGER" />
+			<result column="version" property="version" jdbcType="BIGINT" />
+			<result column="belongId" property="belongid" jdbcType="INTEGER" />
+		</association>
+		<association property="department" javaType="com.jian.ssm.entity.Department">
+	       <id column="departmentId" property="departmentId" jdbcType="INTEGER" />
+	       <result column="departmentName" property="departmentName" jdbcType="VARCHAR" />
+	       <result column="belongId" property="belongid" jdbcType="INTEGER" />
+       </association>
+	</resultMap>
+	<insert id="insertVisitInfo">
+		insert into visitInfo values
+		(#{visitId,jdbcType=VARCHAR},#{employeeId,jdbcType=INTEGER},
+		#{visitorId,jdbcType=VARCHAR},#{visitorName,jdbcType=VARCHAR},
+		#{reasonId,jdbcType=INTEGER},#{cameraPhoto,jdbcType=LONGVARBINARY},
+		#{checkInDeviceId,jdbcType=VARCHAR},#{checkInTime,jdbcType=BIGINT},
+		#{checkOutDeviceId,jdbcType=VARCHAR},#{checkOutTime,jdbcType=BIGINT},
+		#{state,jdbcType=INTEGER},#{comment,jdbcType=VARCHAR},
+		#{action,jdbcType=INTEGER},#{version,jdbcType=BIGINT},#{belongId,jdbcType=INTEGER} ,#{employeeName,jdbcType=VARCHAR})
+	</insert>
+	<select id="selectViditInfos" resultMap="BaseResultMap">
+		select * from visitInfo where checkInDeviceId !=
+		#{checkInDeviceId,jdbcType=VARCHAR}
+		and version > #{version,jdbcType=BIGINT}
+		and state = 0
+	</select>
+	<select id="selectVisit" resultMap="BaseResultMap">
+		select *
+		from (select row_number()over(order by checkInTime desc)rownumber ,* from
+		visitInfo  <if test="belongId != 0">
+		where belongId= #{belongId,jdbcType=VARCHAR}
+		  </if> ) visitInfo
+		where rownumber between #{befor ,jdbcType=INTEGER} and #{after ,
+		jdbcType=INTEGER} and visitinfo.action = 0  
+	</select>
+	<select id="selectCount" resultType="java.lang.Integer">
+		select count(*) from visitInfo where  action = 0  <if test="belongId != 0">and  belongId = #{belongId ,jdbcType=INTEGER}</if>  
+	</select>
+	<select id="selectVisitInfo" resultMap="BaseResultMap">
+	select visitInfo.visitId ,visitInfo.visitorId , visitInfo.visitorName ,visitInfo.cameraPhoto,visitInfo.comment,visitor.sex
+	,visitor.nation ,visitor.birthday,visitor.address,
+	employee.name ,employee.phone ,employee.photo,Department.departmentName
+	from visitInfo
+	JOIN visitor on visitor.visitorId = visitInfo.visitorId
+	JOIN employee on employee.zeId = visitInfo.employeeId
+	JOIN Department on Department.departmentId = employee.departmentId
+	where visitId = #{visitId,jdbcType=VARCHAR} and visitinfo.action = 0 <if test="belongId != 0">and visitInfo.belongId = #{belongId ,jdbcType=INTEGER}</if> 
+	</select>
+	<!-- 数据重载 -->
+	<select id="VisitReloadByVisitorName" resultMap="BaseResultMap">
+		select *
+		from (select row_number()over(order by checkInTime desc)rownumber ,* from
+		visitInfo  <if test="belongId != 0">
+		where belongId= #{belongId,jdbcType=VARCHAR}
+		  </if>) visitInfo
+		where rownumber between #{befor ,jdbcType=INTEGER} and #{after ,
+		jdbcType=INTEGER} and action = 0 and visitorName = #{visitorName ,jdbcType=VARCHAR} 
+	</select>
+	<select id="VisitReloadByEmployeeName" resultMap="BaseResultMap">
+		select *
+		from (select row_number()over(order by checkInTime desc)rownumber ,* from
+		visitInfo <if test="belongId != 0">
+		where belongId= #{belongId,jdbcType=VARCHAR}
+		  </if>) visitInfo
+		JOIN  employee on  employee.id = visitInfo.employeeId
+		where rownumber between #{befor ,jdbcType=INTEGER} and #{after ,jdbcType=INTEGER} and action = 0 and employee.name = #{employeeName ,jdbcType=VARCHAR} 
+	</select>
+	<select id="VisitReloadCheckInDevice" resultMap="BaseResultMap">
+		select *
+		from (select row_number()over(order by checkInTime desc)rownumber ,* from
+		visitInfo <if test="belongId != 0">
+		where belongId= #{belongId,jdbcType=VARCHAR}
+		  </if>) visitInfo
+        JOIN  Device on  visitInfo.checkInDeviceId = Device.deviceId 
+        where rownumber between #{befor ,jdbcType=INTEGER} and #{after ,jdbcType=INTEGER} and action = 0  and  Device.description= #{checkInDevice ,jdbcType=VARCHAR} 
+	</select>
+	<select id="VisitReloadCheckOutDevice" resultMap="BaseResultMap">
+		select *
+		from (select row_number()over(order by checkInTime desc)rownumber ,* from
+		visitInfo <if test="belongId != 0">
+		where belongId= #{belongId,jdbcType=VARCHAR}
+		  </if>) visitInfo
+        JOIN  Device on  visitInfo.checkInDeviceId = Device.deviceId 
+        where rownumber between #{befor ,jdbcType=INTEGER} and #{after ,jdbcType=INTEGER} and action = 0  and  Device.description= #{checkOutDevice ,jdbcType=VARCHAR} 
+	</select>
+	<update id="deleteVisitInfo">
+	   update  visitInfo  set  action = -1 where visitId = #{visitId , jdbcType=VARCHAR} and belongId = #{belongId ,jdbcType=INTEGER}
+	</update>
+	<select id="getAcameraPhoto"  resultMap="BaseResultMap">
+	select *    from  visitInfo where  visitInfo.checkInTime = (SELECT MAX(visitInfo.checkInTime) from visitInfo)
+and  visitInfo.visitorId= #{visitorId ,jdbcType=VARCHAR}
+	</select>
+	<update id="CheckOutUpdate">
+	  update visitInfo  set  checkOutDeviceId = #{co.checkOutDeviceId,jdbcType=VARCHAR} ,checkOutTime = #{co.checkOutTime} ,state = 1
+	                    where  visitId = #{co.visitid} 
+	</update>
+</mapper>

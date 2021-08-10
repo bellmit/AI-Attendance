@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jian.ssm.dao.MettingDao" >
+  <resultMap id="BaseResultMap" type="com.jian.ssm.entity.Metting" >
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="mettingId" jdbcType="INTEGER" property="mettingId" />
+    <result column="mettingName" jdbcType="VARCHAR" property="mettingName" />
+    <result column="startDate" jdbcType="VARCHAR" property="startDate" />
+    <result column="endDate" jdbcType="VARCHAR" property="endDate" />
+    <result column="action" jdbcType="INTEGER" property="action" />
+    <result column="employeeId" jdbcType="VARCHAR" property="employeeId" />
+    <result column="signPhoto" jdbcType="LONGVARBINARY" property="signPhoto" />
+    <result column="signDate" jdbcType="VARCHAR" property="signDate" />
+  </resultMap>
+  <insert id="insertMetting">
+  insert into metting VALUES(#{m.mettingName,jdbcType=VARCHAR},#{m.startDate,jdbcType=VARCHAR},#{m.endDate,jdbcType=VARCHAR},#{m.action,jdbcType=VARCHAR})
+  </insert>
+  <select id="queryMetting" resultMap="BaseResultMap">
+  select * from metting  where  action != -1
+  </select>
+  <update id="updateMetting">
+    update metting set  mettingName=#{m.mettingName,jdbcType=VARCHAR},startDate =#{m.startDate,jdbcType=VARCHAR} ,endDate = #{m.endDate,jdbcType=VARCHAR}
+            where mettingId = #{m.mettingId,jdbcType=INTEGER}
+  </update>
+  <delete id="deleteMet">
+  delete  from metting  where  mettingId= #{mettingId,jdbcType=INTEGER}
+  </delete>
+  <select id="getMettingSignInfo"  resultMap="BaseResultMap">
+    select * from  metting_emp  
+  </select>
+  <select id="selectMettingById"  resultMap="BaseResultMap">
+   select *  from metting  where mettingId = #{mettingId ,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteMetSignInfo">
+  delete  from  metting_emp  where  id = #{id,jdbcType=INTEGER}
+  </delete>
+  <select id="selectMetting"  resultMap="BaseResultMap">
+   select * from  metting 
+  </select>
+  <insert id="insertMettingEmp">
+  insert into   metting_emp values (#{me.mettingId,jdbcType=INTEGER},#{me.employeeId,jdbcType=VARCHAR},#{me.signPhoto,jdbcType=LONGVARBINARY},#{me.signDate,jdbcType=VARCHAR})
+  </insert>
+ </mapper>

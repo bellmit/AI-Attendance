@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jian.ssm.dao.BlackListDao" >
+  <resultMap id="BaseResultMap" type="com.jian.ssm.entity.BlackList" >
+    <id column="visitorId" property="visitorid" jdbcType="VARCHAR" />
+   <result column="photoFeature" property="photofeature" jdbcType="LONGVARBINARY" />
+   <result column="belongId" property="belongid" jdbcType="INTEGER" />
+  </resultMap>
+  <select id="selectBlackList" resultMap="BaseResultMap">
+     select  *  from (select row_number() over(order by visitorId desc)rownumber,* from blackList <if test="belongId != 0">
+		where belongId= #{belongId,jdbcType=VARCHAR}
+		  </if>) blackList
+                where rownumber between #{befor ,jdbcType=INTEGER} and #{after , jdbcType=INTEGER} 
+  </select>
+  <select id="getBlackListPeo" resultType="java.lang.Integer">
+   select  count(*)  from  blackList where visitorId = #{visitorId,jdbcType=VARCHAR} <if test="belingId != 0">and belongId = #{belongId,jdbcType=INTEGER}</if> 
+  </select>
+ </mapper>
